@@ -15,6 +15,12 @@ namespace SharpPlatform
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
+		private Texture2D sprite;
+		private Rectangle chara;
+		int gravity = 0;
+
+		bool jumping;
+		int startY, jumpspeed = 0;
 
 		public Game1 ()
 		{
@@ -46,6 +52,11 @@ namespace SharpPlatform
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
 			//TODO: use this.Content to load your game content here 
+			sprite = Content.Load<Texture2D> ("vehiconava");
+			chara = new Rectangle (0, 0, 100, 100);
+			startY = chara.Y;
+			jumping = false;
+			jumpspeed = 0;
 		}
 
 		/// <summary>
@@ -55,10 +66,42 @@ namespace SharpPlatform
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update (GameTime gameTime)
 		{
+			KeyboardState KeyBS = Keyboard.GetState ();
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed) {
 				Exit ();
 			}
+
+			if (KeyBS.IsKeyDown (Keys.Right))
+				chara.X += 5;
+			if (KeyBS.IsKeyDown (Keys.Left))
+				chara.X -= 5;
+			if (KeyBS.IsKeyDown (Keys.Down))
+				chara.Y += 5;
+			if (KeyBS.IsKeyDown (Keys.Up))
+				chara.Y -= 5;
+
+			chara.Y += gravity;
+			gravity += 1;
+			if (gravity > 2)
+				gravity = 2;
+
+			if (jumping) {
+				chara.Y += jumpspeed;
+				jumpspeed += 1;
+				if (chara.Y >= startY) {
+					chara.Y = startY;
+					jumping = false;
+				}
+			} 
+			else {
+				if (KeyBS.IsKeyDown (Keys.Space)) {
+					jumping = true;
+					jumpspeed = -14;
+				}
+			}
+
+
 			// TODO: Add your update logic here			
 			base.Update (gameTime);
 		}
@@ -73,6 +116,10 @@ namespace SharpPlatform
 		
 			//TODO: Add your drawing code here
             
+			spriteBatch.Begin ();
+			spriteBatch.Draw (sprite, chara, Color.White);
+			spriteBatch.End ();
+
 			base.Draw (gameTime);
 		}
 	}
