@@ -24,7 +24,7 @@ namespace SharpPlatform
 		public void Update(GameTime gameTime, Game1 Game)
 		{
 
-			centre = new Vector2 (Game.playerPos.X + (Game.playerRec.Width / 2) - 400, 0);
+			centre = new Vector2 (Game.player.X + (Game.playerRec.Width / 2) - 400, 0);
 			transform = Matrix.CreateScale(new Vector3(1,1,0)) * 
 				Matrix.CreateTranslation(new Vector3(-centre.X,-centre.Y,0));
 

@@ -20,14 +20,18 @@ namespace SharpPlatform
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
-		Texture2D player, enemy;
-		public Vector2 playerPos, enemyPos = new Vector2(100,100);
+		Texture2D playerSprite, enemySprite, groundSprite;
+		public Vector2 player, enemy = new Vector2(100,100);
 		KeyboardState keystate;
 		Color playerColor = Color.White;
 		Color enemyColor = Color.Black;
 		float moveSpeed = 500f;
-		public Rectangle playerRec, enemyRec;
-		
+		public Rectangle playerRec, enemyRec, ground;
+		float gravity = 0.1f;
+
+		bool jumping;
+		float startY, jumpspeed = 0.0f;
+
 		Camera camera;
 		
 		// Background
@@ -52,8 +56,13 @@ namespace SharpPlatform
 			camera = new Camera(GraphicsDevice.Viewport);
 			// TODO: Add your initialization logic here
 			base.Initialize (); // Calls LoadContent, and therefore gets the width and height of enemy and player
-			enemyRec = new Rectangle ((int)enemyPos.X, (int)enemyPos.Y, enemy.Width, enemy.Height);
-			playerRec = new Rectangle ((int)playerPos.X, (int)playerPos.Y, player.Width, player.Height);
+			enemyRec = new Rectangle ((int)enemy.X, (int)enemy.Y, enemySprite.Width, enemySprite.Height);
+			playerRec = new Rectangle ((int)player.X, (int)player.Y, playerSprite.Width, playerSprite.Height);
+			ground = new Rectangle (-50, 300, 300, 50);
+
+			startY = player.Y;
+			jumping = false;
+			jumpspeed = 0;
 		}
 
 		/// <summary>
@@ -66,11 +75,14 @@ namespace SharpPlatform
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
 			//TODO: use this.Content to load your game content here 
-			player = Content.Load<Texture2D> ("hero");
-			enemy = Content.Load<Texture2D> ("hero");
+			playerSprite = Content.Load<Texture2D> ("hero");
+			enemySprite = Content.Load<Texture2D> ("hero");
+			groundSprite = Content.Load<Texture2D> ("ground");
 			
 			backgroundTexture = Content.Load<Texture2D> ("Background");
 			backgroundPosition = new Vector2 (-400, 0);
+
+
 		}
 
 		/// <summary>
@@ -89,33 +101,43 @@ namespace SharpPlatform
 
 			//Player Movement
 			if (keystate.IsKeyDown (Keys.Right)) {
-				playerPos.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				player.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.Left)) {
-				playerPos.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				player.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.Up)) {
-				playerPos.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				player.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.Down)) {
-				playerPos.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				player.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			}
 
 			//Adjusting playerRec, so that it follows player
-			playerRec.X = (int)playerPos.X;
-			playerRec.Y = (int)playerPos.Y;
+			playerRec.X = (int)player.X;
+			playerRec.Y = (int)player.Y;
+
+			player.Y += gravity;
+			gravity += 0.5f;
+			if (gravity > 2f)
+				gravity = 2f;
+
+			if (playerRec.Intersects (ground))
+				gravity = 0;
+			else
+				jumping = false;
 
 			//Enemy movement
 			if (keystate.IsKeyDown (Keys.D)) {
-				enemyPos.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				enemy.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.A)) {
-				enemyPos.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				enemy.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.W)) {
-				enemyPos.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				enemy.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.S)) {
-				enemyPos.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				enemy.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			}
 
 			//Adjust enemyRec, so that it follows enemy
-			enemyRec.X = (int)enemyPos.X;
-			enemyRec.Y = (int)enemyPos.Y;
+			enemyRec.X = (int)enemy.X;
+			enemyRec.Y = (int)enemy.Y;
 
 			//Collision checking - NEW METHOD
 			if (playerRec.Intersects(enemyRec)) {
@@ -124,6 +146,20 @@ namespace SharpPlatform
 			} else {
 				//No collision
 				playerColor = Color.White;
+			}
+
+			if (jumping) {
+				player.Y += jumpspeed;
+				jumpspeed += 1;
+				if (player.Y > player.Y + 5) {
+					jumping = false;
+				}
+			} 
+			else {
+				if (keystate.IsKeyDown (Keys.Space)) {
+					jumping = true;
+					jumpspeed = -50;
+				}
 			}
 
 					//collision ();
@@ -159,8 +195,9 @@ namespace SharpPlatform
 				null, null, null, null,
 				camera.transform);
 			spriteBatch.Draw(backgroundTexture, backgroundPosition, Color.White);
-			spriteBatch.Draw (player, playerPos, playerColor);
-			spriteBatch.Draw (enemy, enemyPos, enemyColor);
+			spriteBatch.Draw (playerSprite, player, playerColor);
+			spriteBatch.Draw (enemySprite, enemy, enemyColor);
+			spriteBatch.Draw (groundSprite, ground, Color.White);
 			spriteBatch.End ();
 
 			base.Draw (gameTime);
