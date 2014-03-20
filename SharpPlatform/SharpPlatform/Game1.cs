@@ -21,12 +21,18 @@ namespace SharpPlatform
 		SpriteBatch spriteBatch;
 
 		Texture2D player, enemy;
-		Vector2 playerPos, enemyPos = new Vector2(100,100);
+		public Vector2 playerPos, enemyPos = new Vector2(100,100);
 		KeyboardState keystate;
 		Color playerColor = Color.White;
 		Color enemyColor = Color.Black;
 		float moveSpeed = 500f;
-		Rectangle playerRec, enemyRec;
+		public Rectangle playerRec, enemyRec;
+		
+		Camera camera;
+		
+		// Background
+		Texture2D backgroundTexture;
+		Vector2 backgroundPosition;
 
 		public Game1 ()
 		{
@@ -43,6 +49,7 @@ namespace SharpPlatform
 		/// </summary>
 		protected override void Initialize ()
 		{
+			camera = new Camera(GraphicsDevice.Viewport);
 			// TODO: Add your initialization logic here
 			base.Initialize (); // Calls LoadContent, and therefore gets the width and height of enemy and player
 			enemyRec = new Rectangle ((int)enemyPos.X, (int)enemyPos.Y, enemy.Width, enemy.Height);
@@ -61,6 +68,9 @@ namespace SharpPlatform
 			//TODO: use this.Content to load your game content here 
 			player = Content.Load<Texture2D> ("hero");
 			enemy = Content.Load<Texture2D> ("hero");
+			
+			backgroundTexture = Content.Load<Texture2D> ("Background");
+			backgroundPosition = new Vector2 (-400, 0);
 		}
 
 		/// <summary>
@@ -117,7 +127,7 @@ namespace SharpPlatform
 			}
 
 					//collision ();
-
+			camera.Update (gameTime, this);
 			base.Update (gameTime);
 		}
 		/*OLD COLLISION METHOD	
@@ -144,7 +154,11 @@ namespace SharpPlatform
 			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
 		
 			//TODO: Add your drawing code here
-			spriteBatch.Begin ();
+			spriteBatch.Begin (SpriteSortMode.Deferred, 
+				BlendState.AlphaBlend, 
+				null, null, null, null,
+				camera.transform);
+			spriteBatch.Draw(backgroundTexture, backgroundPosition, Color.White);
 			spriteBatch.Draw (player, playerPos, playerColor);
 			spriteBatch.Draw (enemy, enemyPos, enemyColor);
 			spriteBatch.End ();
