@@ -12,7 +12,7 @@ namespace SharpPlatform
 {
 	public class Camera
 	{
-		public Matrix transform;
+		/*public Matrix transform;
 		Viewport view;
 		Vector2 centre;
 
@@ -28,6 +28,6 @@ namespace SharpPlatform
 			transform = Matrix.CreateScale(new Vector3(1,1,0)) * 
 				Matrix.CreateTranslation(new Vector3(-centre.X,-centre.Y,0));
 
-		}
+		}*/
 	}
 }
