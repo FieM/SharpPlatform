@@ -45,16 +45,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\Camera.cs" />
-    <Compile Include="Hero.cs" />
-    <Compile Include="Enemy.cs" />
-    <Compile Include="Item.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Content Include="Content\vehiconava.png">
     <Content Include="Content\hero.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

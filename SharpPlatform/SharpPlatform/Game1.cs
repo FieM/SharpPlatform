@@ -1,4 +1,4 @@
-#region Using Statements
+﻿#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
