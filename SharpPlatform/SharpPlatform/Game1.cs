@@ -29,7 +29,8 @@ namespace SharpPlatform
 		public Rectangle playerRec, enemyRec, ground;
 		float gravity = 0.1f;
 		bool patrick = false;
-		
+		float pik;
+
 		bool jumping;
 		float startY, jumpspeed = 0.0f;
 
