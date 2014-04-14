@@ -1,9 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="SharpPlatform\Game1.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="SharpPlatform\Properties\Camera.cs">
     <Files>
+<<<<<<< HEAD
+      <File FileName="SharpPlatform\Game1.cs" Line="136" Column="5" />
+      <File FileName="SharpPlatform\Properties\Camera.cs" Line="1" Column="1" />
+=======
+      <File FileName="SharpPlatform\Game1.cs" Line="71" Column="4" />
+      <File FileName="SharpPlatform\Properties\Camera.cs" Line="17" Column="18" />
+      <File FileName="SharpPlatform\Program.cs" Line="20" Column="16" />
+      <File FileName="SharpPlatform\Item.cs" Line="1" Column="1" />
+      <File FileName="SharpPlatform\Hero.cs" Line="13" Column="1" />
       <File FileName="SharpPlatform\Enemy.cs" Line="1" Column="1" />
-      <File FileName="SharpPlatform\Game1.cs" Line="1" Column="1" />
+>>>>>>> origin/Fie
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
