@@ -3,6 +3,7 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="SharpPlatform\Properties\Camera.cs">
     <Files>
 <<<<<<< HEAD
+<<<<<<< HEAD
       <File FileName="SharpPlatform\Game1.cs" Line="136" Column="5" />
       <File FileName="SharpPlatform\Properties\Camera.cs" Line="1" Column="1" />
 =======
@@ -13,6 +14,10 @@
       <File FileName="SharpPlatform\Hero.cs" Line="13" Column="1" />
       <File FileName="SharpPlatform\Enemy.cs" Line="1" Column="1" />
 >>>>>>> origin/Fie
+=======
+      <File FileName="SharpPlatform\Game1.cs" Line="116" Column="4" />
+      <File FileName="SharpPlatform\Properties\Camera.cs" Line="27" Column="33" />
+>>>>>>> parent of 8cbd8af... Creating Classes
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

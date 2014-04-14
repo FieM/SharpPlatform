@@ -57,6 +57,7 @@ namespace SharpPlatform
 <<<<<<< HEAD
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			//TODO: use this.Content to load your game content here 
 			sprite = Content.Load<Texture2D> ("vehiconava");
 			chara = new Rectangle (0, 0, 100, 100);
@@ -67,6 +68,16 @@ namespace SharpPlatform
 =======
 >>>>>>> origin/Fie
 			//TODO: use this.Content to load your game content here
+=======
+			//TODO: use this.Content to load your game content here 
+			playerSprite = Content.Load<Texture2D> ("hero");
+			enemySprite = Content.Load<Texture2D> ("hero");
+			groundSprite = Content.Load<Texture2D> ("ground");
+			
+			backgroundTexture = Content.Load<Texture2D> ("Background");
+			backgroundPosition = new Vector2 (-400, 0);
+
+>>>>>>> parent of 8cbd8af... Creating Classes
 
 >>>>>>> 8cbd8afa785ac1a46e5e7d73ca157c453035153f
 		}
@@ -84,6 +95,47 @@ namespace SharpPlatform
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keystate.IsKeyDown(Keys.Escape) || keystate.IsKeyDown (Keys.Back)) {
 				Exit ();
 			}
+<<<<<<< HEAD
+=======
+			// TODO: Add your update logic here			
+			keystate = Keyboard.GetState ();
+
+			//Player Movement
+			if (keystate.IsKeyDown (Keys.Right)) {
+				player.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+			} else if (keystate.IsKeyDown (Keys.Left)) {
+				player.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+			} else if (keystate.IsKeyDown (Keys.Up)) {
+				player.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+			} else if (keystate.IsKeyDown (Keys.Down)) {
+				player.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+			}
+
+			//Adjusting playerRec, so that it follows player
+			playerRec.X = (int)player.X;
+			playerRec.Y = (int)player.Y;
+
+			player.Y += gravity;
+			gravity += 0.5f;
+			if (gravity > 2f)
+				gravity = 2f;
+
+			if (playerRec.Intersects (ground))
+				gravity = 0;
+			else
+				jumping = false;
+
+			//Enemy movement
+			if (keystate.IsKeyDown (Keys.D)) {
+				enemy.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+			} else if (keystate.IsKeyDown (Keys.A)) {
+				enemy.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+			} else if (keystate.IsKeyDown (Keys.W)) {
+				enemy.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+			} else if (keystate.IsKeyDown (Keys.S)) {
+				enemy.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+			}
+>>>>>>> parent of 8cbd8af... Creating Classes
 
 			if (KeyBS.IsKeyDown (Keys.Right))
 				chara.X += 5;
