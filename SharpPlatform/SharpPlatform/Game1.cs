@@ -74,7 +74,7 @@ namespace SharpPlatform
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
-			//TODO: use this.Content to load your game content here 
+			//TODO: use this.Content to load your game content here
 			playerSprite = Content.Load<Texture2D> ("hero");
 			enemySprite = Content.Load<Texture2D> ("hero");
 			groundSprite = Content.Load<Texture2D> ("ground");
@@ -98,17 +98,6 @@ namespace SharpPlatform
 			}
 			// TODO: Add your update logic here			
 			keystate = Keyboard.GetState ();
-
-			//Player Movement
-			if (keystate.IsKeyDown (Keys.Right)) {
-				player.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.Left)) {
-				player.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.Up)) {
-				player.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.Down)) {
-				player.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			}
 
 			//Adjusting playerRec, so that it follows player
 			playerRec.X = (int)player.X;
