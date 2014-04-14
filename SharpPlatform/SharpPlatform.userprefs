@@ -3,7 +3,7 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="SharpPlatform\Game1.cs">
     <Files>
       <File FileName="SharpPlatform\Game1.cs" Line="116" Column="4" />
-      <File FileName="SharpPlatform\Properties\Camera.cs" Line="27" Column="33" />
+      <File FileName="SharpPlatform\Properties\Camera.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
