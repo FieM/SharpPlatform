@@ -1,12 +1,16 @@
 ﻿#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 #endregion
-namespace woooorktesting
+namespace SharpPlatform
 {
 	/// <summary>
 	/// This is the main type for your game
@@ -15,12 +19,18 @@ namespace woooorktesting
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
+		private Texture2D sprite;
+		private Rectangle chara;
+		int gravity = 0;
+
+		bool jumping;
+		int startY, jumpspeed = 0;
 
 		public Game1 ()
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	            
-			graphics.IsFullScreen = true;		
+			graphics.IsFullScreen = false;		
 		}
 
 		/// <summary>
@@ -32,7 +42,7 @@ namespace woooorktesting
 		protected override void Initialize ()
 		{
 			// TODO: Add your initialization logic here
-			base.Initialize ();
+			base.Initialize (); // Calls LoadContent, and therefore gets the width and height of enemy and player
 
 		}
 
@@ -44,8 +54,21 @@ namespace woooorktesting
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
+<<<<<<< HEAD
 
+<<<<<<< HEAD
 			//TODO: use this.Content to load your game content here 
+			sprite = Content.Load<Texture2D> ("vehiconava");
+			chara = new Rectangle (0, 0, 100, 100);
+			startY = chara.Y;
+			jumping = false;
+			jumpspeed = 0;
+=======
+=======
+>>>>>>> origin/Fie
+			//TODO: use this.Content to load your game content here
+
+>>>>>>> 8cbd8afa785ac1a46e5e7d73ca157c453035153f
 		}
 
 		/// <summary>
@@ -55,14 +78,49 @@ namespace woooorktesting
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update (GameTime gameTime)
 		{
+<<<<<<< HEAD
+			KeyboardState KeyBS = Keyboard.GetState ();
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
-			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed) {
+			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keystate.IsKeyDown(Keys.Escape) || keystate.IsKeyDown (Keys.Back)) {
 				Exit ();
 			}
+
+			if (KeyBS.IsKeyDown (Keys.Right))
+				chara.X += 5;
+			if (KeyBS.IsKeyDown (Keys.Left))
+				chara.X -= 5;
+			if (KeyBS.IsKeyDown (Keys.Down))
+				chara.Y += 5;
+			if (KeyBS.IsKeyDown (Keys.Up))
+				chara.Y -= 5;
+
+			chara.Y += gravity;
+			gravity += 1;
+			if (gravity > 2)
+				gravity = 2;
+
+			if (jumping) {
+				chara.Y += jumpspeed;
+				jumpspeed += 1;
+				if (chara.Y >= startY) {
+					chara.Y = startY;
+					jumping = false;
+				}
+			} 
+			else {
+				if (KeyBS.IsKeyDown (Keys.Space)) {
+					jumping = true;
+					jumpspeed = -14;
+				}
+			}
+
+
+=======
+>>>>>>> origin/Fie
 			// TODO: Add your update logic here			
+
 			base.Update (gameTime);
 		}
-
 		/// <summary>
 		/// This is called when the game should draw itself.
 		/// </summary>
@@ -70,9 +128,28 @@ namespace woooorktesting
 		protected override void Draw (GameTime gameTime)
 		{
 			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
-
+		
 			//TODO: Add your drawing code here
+<<<<<<< HEAD
+<<<<<<< HEAD
+            
+			spriteBatch.Begin ();
+			spriteBatch.Draw (sprite, chara, Color.White);
+=======
+			spriteBatch.Begin (SpriteSortMode.Deferred, 
+				BlendState.AlphaBlend, 
+				null, null, null, null,
+				camera.transform);
+			spriteBatch.Draw(backgroundTexture, backgroundPosition, Color.White);
+			spriteBatch.Draw (playerSprite, player, playerColor);
+			spriteBatch.Draw (enemySprite, enemy, enemyColor);
+			spriteBatch.Draw (groundSprite, ground, Color.White);
+>>>>>>> 8cbd8afa785ac1a46e5e7d73ca157c453035153f
+			spriteBatch.End ();
 
+=======
+	
+>>>>>>> origin/Fie
 			base.Draw (gameTime);
 		}
 	}
