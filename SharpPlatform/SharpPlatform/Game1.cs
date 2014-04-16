@@ -1,4 +1,4 @@
-﻿#region Using Statements
+﻿﻿#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -29,10 +29,12 @@ namespace SharpPlatform
 		Color enemyColor = Color.Black;
 		float moveSpeed = 500f;
 		public Rectangle playerRec, enemyRec, ground;
+
 		//	float gravity = 0.1f;
 		int gravity = 0;
 		//bool patrick = false;
 		
+
 		bool jumping;
 		bool touchingGround;
 		//float startY, jumpspeed = 0;
