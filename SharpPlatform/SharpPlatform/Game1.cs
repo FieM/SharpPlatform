@@ -1,4 +1,4 @@
-﻿#region Using Statements
+﻿﻿#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -29,7 +29,9 @@ namespace SharpPlatform
 		public Rectangle playerRec, enemyRec, ground;
 		float gravity = 0.1f;
 		bool patrick = false;
+
 		bool andreas = true;
+
 		bool jumping;
 		float startY, jumpspeed = 0.0f;
 
