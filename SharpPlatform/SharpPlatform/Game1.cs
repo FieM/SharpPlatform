@@ -21,17 +21,22 @@ namespace SharpPlatform
 		SpriteBatch spriteBatch;
 
 		Texture2D playerSprite, enemySprite, groundSprite;
-		public Vector2 player, enemy = new Vector2(100,100);
+		//public Vector2 player, enemy = new Vector2(100,100);
+		public Vector2 enemy = new Vector2(100,100);
+		public Rectangle player;
 		KeyboardState keystate;
 		Color playerColor = Color.White;
 		Color enemyColor = Color.Black;
 		float moveSpeed = 500f;
 		public Rectangle playerRec, enemyRec, ground;
-		float gravity = 0.1f;
-		bool patrick = false;
+		//	float gravity = 0.1f;
+		int gravity = 0;
+		//bool patrick = false;
 		
 		bool jumping;
-		float startY, jumpspeed = 0.0f;
+		bool touchingGround;
+		//float startY, jumpspeed = 0;
+		int startY, jumpspeed = 0;
 
 		Camera camera;
 
@@ -58,10 +63,11 @@ namespace SharpPlatform
 			// TODO: Add your initialization logic here
 			base.Initialize (); // Calls LoadContent, and therefore gets the width and height of enemy and player
 			enemyRec = new Rectangle ((int)enemy.X, (int)enemy.Y, enemySprite.Width, enemySprite.Height);
-			playerRec = new Rectangle ((int)player.X, (int)player.Y, playerSprite.Width, playerSprite.Height);
+			//playerRec = new Rectangle ((int)player.X, (int)player.Y, playerSprite.Width, playerSprite.Height);
+			player = new Rectangle (0, 0, 50, 50);
 			ground = new Rectangle (-50, 300, 300, 50);
 
-			startY = player.Y;
+
 			jumping = false;
 			jumpspeed = 0;
 		}
@@ -93,15 +99,16 @@ namespace SharpPlatform
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update (GameTime gameTime)
 		{
+			startY = player.Y;
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
-			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keystate.IsKeyDown(Keys.Escape) || keystate.IsKeyDown (Keys.Back)) {
+			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keystate.IsKeyDown (Keys.Escape) || keystate.IsKeyDown (Keys.Back)) {
 				Exit ();
 			}
 			// TODO: Add your update logic here			
 			keystate = Keyboard.GetState ();
 
 			//Player Movement
-			if (keystate.IsKeyDown (Keys.Right)) {
+			/*if (keystate.IsKeyDown (Keys.Right)) {
 				player.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.Left)) {
 				player.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -109,24 +116,40 @@ namespace SharpPlatform
 				player.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.Down)) {
 				player.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			}
+			}*/
+			if (keystate.IsKeyDown (Keys.Right))
+				player.X += 5;
+			if (keystate.IsKeyDown (Keys.Left))
+				player.X -= 5;
+			if (keystate.IsKeyDown (Keys.Down))
+				player.Y += 5;
+			if (keystate.IsKeyDown (Keys.Up))
+				player.Y -= 5;
 
 			//Adjusting playerRec, so that it follows player
 			playerRec.X = (int)player.X;
 			playerRec.Y = (int)player.Y;
 
-			player.Y += gravity;
+			/*player.Y += gravity;
 			gravity += 0.5f;
 			if (gravity > 2f)
 				gravity = 2f;
+			*/
+			player.Y += gravity;
+			gravity += 1;
+			if (gravity > 2)
+				gravity = 2;
 
-			if (playerRec.Intersects (ground))
+
+			if (player.Intersects (ground)){
 				gravity = 0;
-			else
-				jumping = false;
+				touchingGround = true;
+			}
+
+
 
 			//Enemy movement
-			if (keystate.IsKeyDown (Keys.D)) {
+			/*if (keystate.IsKeyDown (Keys.D)) {
 				enemy.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.A)) {
 				enemy.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -134,7 +157,7 @@ namespace SharpPlatform
 				enemy.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 			} else if (keystate.IsKeyDown (Keys.S)) {
 				enemy.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			}
+			}*/
 
 			//Adjust enemyRec, so that it follows enemy
 			enemyRec.X = (int)enemy.X;
@@ -152,14 +175,18 @@ namespace SharpPlatform
 			if (jumping) {
 				player.Y += jumpspeed;
 				jumpspeed += 1;
-				if (player.Y > player.Y + 5) {
+				//if (player.Y > player.Y + 5) {
+				if (player.Y >= startY) {
+					player.Y = startY;
 					jumping = false;
+					touchingGround = false;
 				}
+					
 			} 
 			else {
-				if (keystate.IsKeyDown (Keys.Space)) {
+				if (keystate.IsKeyDown (Keys.Space) && touchingGround) {
 					jumping = true;
-					jumpspeed = -50;
+					jumpspeed = -14;
 				}
 			}
 
