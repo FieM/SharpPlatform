@@ -322,6 +322,7 @@ namespace SharpPlatform
 			return null;
 		}
 
+
 		public void EnemyDrop(Enemy enemy)
 		{
 			AddItem (10, 30, new Point(enemy.X, enemy.Y));
