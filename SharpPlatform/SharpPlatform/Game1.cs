@@ -36,6 +36,7 @@ namespace SharpPlatform
 		DateTime lastAttack = DateTime.MinValue;
 
 		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) };
+		Rectangle[] groundSizesUpperTwo = new[] { new Rectangle (1000, 350, 1000, 60) };
 		Rectangle[] groundSizes = new[] { new Rectangle (500, 200, 1000, 60) };
 		Point[] enemyPositions = new[] { new Point (100, 100) };
 		Point[] coinPositions = new[] { new Point (100, 200) };
@@ -80,6 +81,9 @@ namespace SharpPlatform
 				AddGround (size);
 
 			foreach (var size in groundSizesUpper)
+				AddGround (size);
+
+			foreach (var size in groundSizesUpperTwo)
 				AddGround (size);
 
 			foreach (var position in enemyPositions)
