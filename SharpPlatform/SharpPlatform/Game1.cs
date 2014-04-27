@@ -18,7 +18,7 @@ namespace SharpPlatform
 		Camera camera;
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
-		SpriteFont gameFont;
+		//SpriteFont gameFont;
 		// Background
 		Texture2D backgroundTexture;
 		Vector2 backgroundPosition;
@@ -26,7 +26,7 @@ namespace SharpPlatform
 		List<GameObject> gameObjects = new List<GameObject>();
 
 		Hero hero;
-		float moveSpeed = 500f;
+		//float moveSpeed = 500f;
 		int gravity = 0;
 		bool jumping = false;
 		bool touchingGround = false;
