@@ -26,13 +26,13 @@ namespace SharpPlatform
 		List<GameObject> gameObjects = new List<GameObject>();
 
 		Hero hero;
-		//float moveSpeed = 500f;
 		int gravity = 0;
+
 		bool jumping = false;
 		bool touchingGround = false;
-		//	float gravity = 0.1f;
-		//float startY, jumpspeed = 0;
+
 		int startY, jumpspeed = 0;
+
 		DateTime lastAttack = DateTime.MinValue;
 
 		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) };
@@ -108,6 +108,7 @@ namespace SharpPlatform
 		{
 			var keystate = Keyboard.GetState ();
 			startY = hero.Y;
+
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keystate.IsKeyDown (Keys.Escape) || keystate.IsKeyDown (Keys.Back)) {
 				Exit ();
@@ -116,19 +117,11 @@ namespace SharpPlatform
 			hero.Color = Color.White;
 
 			//Player Movement
-			/*if (keystate.IsKeyDown (Keys.Right)) {
-				player.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.Left)) {
-				player.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.Up)) {
-				player.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.Down)) {
-				player.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			}*/
 			if (keystate.IsKeyDown (Keys.Right))
 				hero.X += 5;
 			if (keystate.IsKeyDown (Keys.Left))
 				hero.X -= 5;
+			//for testing purpose only, to be deleted
 			if (keystate.IsKeyDown (Keys.Down))
 				hero.Y += 5;
 			if (keystate.IsKeyDown (Keys.Up))
@@ -138,32 +131,15 @@ namespace SharpPlatform
 			//playerRec.X = (int)player.X;
 			//playerRec.Y = (int)player.Y;
 
-			/*player.Y += gravity;
-			gravity += 0.5f;
-			if (gravity > 2f)
-				gravity = 2f;
-			*/
 			hero.Y += gravity;
 			gravity += 1;
-			if (gravity > 2)
-				gravity = 2;
-
-			//Enemy movement
-			/*if (keystate.IsKeyDown (Keys.D)) {
-				enemy.X += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.A)) {
-				enemy.X -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.W)) {
-				enemy.Y -= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			} else if (keystate.IsKeyDown (Keys.S)) {
-				enemy.Y += moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			}*/
+			if (gravity > 3)
+				gravity = 3;
 
 			if (jumping)
 			{
 				hero.Y += jumpspeed;
 				jumpspeed += 1;
-				//if (player.Y > player.Y + 5) {
 				if (hero.Y >= startY)
 				{
 					hero.Y = startY;
