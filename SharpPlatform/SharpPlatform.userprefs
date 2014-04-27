@@ -1,12 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="SharpPlatform\Hero.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="SharpPlatform\Game1.cs">
     <Files>
       <File FileName="SharpPlatform\Character.cs" Line="1" Column="1" />
       <File FileName="SharpPlatform\Enemy.cs" Line="1" Column="1" />
-      <File FileName="SharpPlatform\Game1.cs" Line="134" Column="22" />
+      <File FileName="SharpPlatform\Game1.cs" Line="39" Column="37" />
       <File FileName="SharpPlatform\Item.cs" Line="1" Column="1" />
-      <File FileName="SharpPlatform\Ground.cs" Line="1" Column="1" />
+      <File FileName="SharpPlatform\Ground.cs" Line="20" Column="20" />
       <File FileName="SharpPlatform\Properties\Camera.cs" Line="1" Column="1" />
       <File FileName="SharpPlatform\Hero.cs" Line="18" Column="57" />
     </Files>

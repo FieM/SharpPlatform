@@ -20,24 +20,32 @@ namespace SharpPlatform
 		SpriteBatch spriteBatch;
 		//SpriteFont gameFont;
 		// Background
-		Texture2D backgroundTexture;
+		Texture2D backgroundTexture, ceilingSprite;
 		Vector2 backgroundPosition;
 		Random random = new Random ();
 		List<GameObject> gameObjects = new List<GameObject>();
+		public Rectangle ceiling;
 
 		Hero hero;
 		int gravity = 0;
+		int antigravity = 0;
 
 		bool jumping = false;
 		bool touchingGround = false;
-
+		bool touchingCeiling = false;
 		int startY, jumpspeed = 0;
+
+		bool antijumping = false;
+		int antistartY, antijumpspeed = 0;
+
+		bool hasDevice = false;
+		bool deviceActivated = false;
 
 		DateTime lastAttack = DateTime.MinValue;
 
 		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) };
 		Rectangle[] groundSizesUpperTwo = new[] { new Rectangle (1000, 350, 1000, 60) };
-		Rectangle[] groundSizes = new[] { new Rectangle (500, 200, 1000, 60) };
+		Rectangle[] groundSizes = new[] { new Rectangle (500, 170, 1000, 30) };
 		Point[] enemyPositions = new[] { new Point (100, 100) };
 		Point[] coinPositions = new[] { new Point (100, 200) };
 
@@ -65,6 +73,8 @@ namespace SharpPlatform
 			// TODO: Add your initialization logic here
 			base.Initialize (); // Calls LoadContent, and therefore gets the width and height of enemy and player
 			//playerRec = new Rectangle ((int)player.X, (int)player.Y, playerSprite.Width, playerSprite.Height);
+			ceiling = new Rectangle (500, 200, 1000, 30);
+
 		}
 
 		/// <summary>
@@ -97,6 +107,9 @@ namespace SharpPlatform
 
 			backgroundTexture = Content.Load<Texture2D> ("Background");
 			backgroundPosition = new Vector2 (-400, 0);
+
+			ceilingSprite = Content.Load<Texture2D> ("ground");
+
 		}
 
 		/// <summary>
@@ -108,6 +121,7 @@ namespace SharpPlatform
 		{
 			var keystate = Keyboard.GetState ();
 			startY = hero.Y;
+			antistartY = hero.Y;
 
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keystate.IsKeyDown (Keys.Escape) || keystate.IsKeyDown (Keys.Back)) {
@@ -115,6 +129,24 @@ namespace SharpPlatform
 			}
 			// TODO: Add your update logic here
 			hero.Color = Color.White;
+
+			if (hero.Intersects (ceiling)) {
+				antigravity = 0;
+				touchingCeiling = true;
+				touchingGround = false;
+			}
+
+			if (keystate.IsKeyDown (Keys.Q))
+				hasDevice = true;
+
+			if (keystate.IsKeyDown (Keys.E) && touchingGround)
+				deviceActivated = true;
+			if (keystate.IsKeyDown (Keys.E) && touchingCeiling && deviceActivated) {
+				deviceActivated = false;
+			}
+
+
+
 
 			//Player Movement
 			if (keystate.IsKeyDown (Keys.Right))
@@ -127,34 +159,54 @@ namespace SharpPlatform
 			if (keystate.IsKeyDown (Keys.Up))
 				hero.Y -= 5;
 
-			//Adjusting playerRec, so that it follows player
-			//playerRec.X = (int)player.X;
-			//playerRec.Y = (int)player.Y;
+			//GRAVITY AND ANTI-GRAVITY
+			if (deviceActivated) {
+				hero.Y -= antigravity;
+				antigravity += 1;
+				if (antigravity > 4)
+					antigravity = 4;
+			}
+			else{
+				hero.Y += gravity;
+				gravity += 1;
+				if (gravity > 4)
+					gravity = 4;
+			}
 
-			hero.Y += gravity;
-			gravity += 1;
-			if (gravity > 3)
-				gravity = 3;
 
-			if (jumping)
-			{
+			if (jumping) {
 				hero.Y += jumpspeed;
 				jumpspeed += 1;
-				if (hero.Y >= startY)
-				{
+				if (hero.Y >= startY) {
 					hero.Y = startY;
 					jumping = false;
 					touchingGround = false;
 				}
-			} 
-			else
-			{
-				if (keystate.IsKeyDown (Keys.Space) && touchingGround)
-				{
+			} else {
+				if (keystate.IsKeyDown (Keys.Space) && touchingGround && !deviceActivated) {
 					jumping = true;
 					jumpspeed = -14;
 				}
 			}
+
+
+			if (antijumping) {
+				hero.Y -= antijumpspeed;
+				antijumpspeed += 1;
+				if (hero.Y <= antistartY) {
+					hero.Y = antistartY;
+					antijumping = false;
+					touchingCeiling = false;
+				}
+			} else {
+				if (keystate.IsKeyDown (Keys.Space) && touchingCeiling && deviceActivated) {
+					antijumping = true;
+					antijumpspeed = -14;
+				}
+			}
+
+
+		
 
 			//Collision
 			// Use LINQ to only select the game objects of Enemy type.
@@ -167,6 +219,7 @@ namespace SharpPlatform
 					{
 						gravity = 0;
 						touchingGround = true;
+						touchingCeiling = false;
 						hero.Y = ground.Y - hero.Size.Height;
 					}
 				}
@@ -228,7 +281,7 @@ namespace SharpPlatform
 			foreach (var gameObject in gameObjects)
 				spriteBatch.Draw (gameObject.Sprite, gameObject.Size, gameObject.Color);
 			//spriteBatch.DrawString (gameFont, "Hello", new Vector2 (10, 10), Color.ForestGreen);
-
+			spriteBatch.Draw (ceilingSprite, ceiling, Color.White);
 			spriteBatch.End ();
 
 			base.Draw (gameTime);
