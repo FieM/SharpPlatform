@@ -35,7 +35,8 @@ namespace SharpPlatform
 		int startY, jumpspeed = 0;
 		DateTime lastAttack = DateTime.MinValue;
 
-		Rectangle[] groundSizes = new[] { new Rectangle (-50, 300, 300, 50) };
+		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) };
+		Rectangle[] groundSizes = new[] { new Rectangle (500, 200, 1000, 60) };
 		Point[] enemyPositions = new[] { new Point (100, 100) };
 		Point[] coinPositions = new[] { new Point (100, 200) };
 
@@ -76,6 +77,9 @@ namespace SharpPlatform
 
 			//TODO: use this.Content to load your game content here
 			foreach (var size in groundSizes)
+				AddGround (size);
+
+			foreach (var size in groundSizesUpper)
 				AddGround (size);
 
 			foreach (var position in enemyPositions)
