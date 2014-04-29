@@ -55,6 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />
+    <None Include="Content\0.sec" />
+    <None Include="Content\1.sec" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />

@@ -27,7 +27,6 @@ namespace SharpPlatform
 		Random random = new Random ();
 		//Making a list of all my list of gameObjects. This will be the entire map of the game, Sections will contain a list of gameObjects, which is the content of the level(enemies, grounds etc.)
 		List<List<GameObject>>Sections = new List<List<GameObject>>();
-		public Rectangle ceiling;
 		Dictionary<string, Texture2D> sprites = new Dictionary<string, Texture2D> ();
 
 		Hero hero; // Accessing the Hero class
@@ -54,15 +53,6 @@ namespace SharpPlatform
 		//Screen size is 800px wide
 		string directoryPath = @"C:\Users\IceTruckker\Documents\GitHub\SharpPlatform\SharpPlatform\SharpPlatform\Content";
 		int activeSection = 0;
-		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) };
-		Rectangle[] groundSizesUpperTwo = new[] { new Rectangle (1000, 350, 1000, 60) };
-		Rectangle[] groundSizes = new[]
-		{
-			new Rectangle (-400, 300, 3000, 50),
-			new Rectangle (0, 200, 200, 50),
-		};
-		Point[] enemyPositions = new[] { new Point (100, 100) };
-		Point[] coinPositions = new[] { new Point (100, 200) };
 
 		public Hero Hero
 		{
@@ -88,8 +78,6 @@ namespace SharpPlatform
 			// TODO: Add your initialization logic here
 			base.Initialize (); // Calls LoadContent, and therefore gets the width and height of enemy and player
 			//playerRec = new Rectangle ((int)player.X, (int)player.Y, playerSprite.Width, playerSprite.Height);
-			ceiling = new Rectangle (500, 200, 1000, 30); // Added a top ceiling.
-
 		}
 
 		/// <summary>
@@ -106,20 +94,7 @@ namespace SharpPlatform
 			sprites.Add ("goldcoin", Content.Load<Texture2D> ("goldcoin"));
 			sprites.Add ("silvercoin", Content.Load<Texture2D> ("silvercoin"));
 			sprites.Add ("coppercoin", Content.Load<Texture2D> ("coppercoin"));
-			//TODO: use this.Content to load your game content here
-			foreach (var size in groundSizes)
-				AddGround (size);
 
-			foreach (var size in groundSizesUpper) // Adds each of the rectangles to the game.
-				AddGround (size);
-
-			foreach (var size in groundSizesUpperTwo)
-				AddGround (size);
-
-			foreach (var position in enemyPositions)
-				AddEnemy (position, 50, 300);
-
-			//TODO: use this.Content to load your game content here
 			Sections = LoadSections (directoryPath);
 
 			hero = new Hero (new Rectangle(0, 0, 50, 50), Content.Load<Texture2D> ("hero")); //Using initializer to set property
@@ -150,11 +125,11 @@ namespace SharpPlatform
 			// TODO: Add your update logic here
 			hero.Color = Color.White; // Adds a white border around the hero.
 
-			if (hero.Intersects (ceiling)) { // Collision with ceiling.
-				antigravity = 0; // Antigravity 
-				touchingCeiling = true;
-				touchingGround = false;
-			}
+//			if (hero.Intersects (ceiling)) { // Collision with ceiling.
+//				antigravity = 0; // Antigravity 
+//				touchingCeiling = true;
+//				touchingGround = false;
+//			}
 
 			if (keystate.IsKeyDown (Keys.Q))
 				hasDevice = true;
@@ -164,9 +139,6 @@ namespace SharpPlatform
 			if (keystate.IsKeyDown (Keys.E) && touchingCeiling && deviceActivated) {
 				deviceActivated = false;
 			}
-
-
-
 
 			//Player Movement
 			if (keystate.IsKeyDown (Keys.Right))
@@ -227,9 +199,6 @@ namespace SharpPlatform
 					antijumpspeed = -14;
 				}
 			}
-
-
-		
 
 			//Collision
 			// Use LINQ to only select the game objects of Enemy type.
@@ -324,7 +293,6 @@ namespace SharpPlatform
 			}
 
 			//spriteBatch.DrawString (gameFont, "Hello", new Vector2 (10, 10), Color.ForestGreen);
-			spriteBatch.Draw (ceilingSprite, ceiling, Color.White);
 			spriteBatch.End ();
 
 			base.Draw (gameTime);
@@ -336,29 +304,6 @@ namespace SharpPlatform
 			hero.Y = 0;
 		}
 
-		public void AddGround(Rectangle size)
-		{
-			var ground = new Ground (size, Content.Load<Texture2D> ("ground"));
-
-			gameObjects.Add (ground);
-		}
-
-		public void AddEnemy(Point position, int posLeft, int posRight)
-		{
-			var enemy = new Enemy(new Rectangle (position.X, position.Y, 50, 50), Content.Load<Texture2D> ("hero"), posLeft, posRight);
-
-			enemy.Died += (sender, e) =>
-			{
-				var enemyDied = sender as Enemy;
-				if (enemyDied == null)
-					return;
-
-				EnemyDrop (enemyDied);
-				gameObjects.Remove (enemyDied);
-			};
-
-			gameObjects.Add (enemy);
-		}
 		// Adds the coins to the game and allows for the player to pick up, using a switch statement.
 		public void AddCoin(Point position)
 		{
@@ -480,7 +425,7 @@ namespace SharpPlatform
 							gameObject = new Coin (int.Parse (values [index++]), size, sprite){ Color = color };
 							break;
 						case "enemy":
-							gameObject = new Enemy (size, sprite){ Color = color, AttackValue = int.Parse (values [index++]) };
+						gameObject = new Enemy (size, sprite, 50, 300){ Color = color, AttackValue = int.Parse (values [index++]) };
 							break;
 						default:
 							continue;
