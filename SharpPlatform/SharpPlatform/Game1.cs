@@ -17,6 +17,9 @@ namespace SharpPlatform
 {
 	public class Game1 : Game
 	{
+		const int SECTION_WIDTH = 2000;
+		const int MAX_GRAVITY = 10;
+
 		Camera camera; // Accessing the Camera class
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
@@ -31,13 +34,9 @@ namespace SharpPlatform
 		Hero hero; // Accessing the Hero class
 		int gravity = 0; // Variables for the gravity & antigravity
 		bool jumping = false;
-		int jumpspeed = 0;
 
 		bool hasDevice = false; // Used for inventory.
 		bool deviceActivated = false;
-
-		bool reachedRightEnd = true;
-		bool reachedLeftEnd = false;
 
 		DateTime lastAttack = DateTime.MinValue;
 
@@ -106,11 +105,14 @@ namespace SharpPlatform
 			var keystate = Keyboard.GetState ();
 
 			bool touchingGround = false; // Variables to work with the jumping method
+			activeSection = hero.X / SECTION_WIDTH;
 
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keystate.IsKeyDown (Keys.Escape) || keystate.IsKeyDown (Keys.Back)) {
 				Exit ();
 			}
+
+			hero.Color = Color.White;
 
 			//GRAVITY AND ANTI-GRAVITY
 			if (deviceActivated)
@@ -119,103 +121,90 @@ namespace SharpPlatform
 				hero.Y += gravity;
 
 			gravity += 1;
-			if (gravity > 4)
-				gravity = 4;
+			if (gravity > MAX_GRAVITY)
+				gravity = MAX_GRAVITY;
 
 			//Collision
 			// Use LINQ to only select the game objects of Enemy type.
-			foreach (var gameObject in Sections[0].ToArray())
-			{
-				if (gameObject is Ground)
-				{
-					var ground = (Ground)gameObject;
-					if (hero.Intersects (ground))
-					{
-						var intersect = Rectangle.Intersect (hero.Size, ground.Size);
-						if (intersect.Width >= intersect.Height)
-						{
-							if (intersect.Top == hero.Top)
-							{
-								hero.Top = ground.Bottom;
-								if (deviceActivated) {
-									gravity = 0;
-									touchingGround = true;
+			for (int i = Math.Max (activeSection - 1, 0); i < Math.Min (activeSection + 2, Sections.Count); i++) {
+				hero.Left -= SECTION_WIDTH * i;
+				foreach (var gameObject in Sections[i].ToArray()) {
+					if (gameObject is Ground) {
+						var ground = (Ground)gameObject;
+						if (hero.Intersects (ground)) {
+							var intersect = Rectangle.Intersect (hero.Size, ground.Size);
+							if (intersect.Width >= intersect.Height) {
+								if (intersect.Top == hero.Top) {
+									hero.Top = ground.Bottom;
+									if (deviceActivated) {
+										touchingGround = true;
+									}
+								} else {
+									hero.Bottom = ground.Top;
+									if (!deviceActivated) {
+										touchingGround = true;
+									}
 								}
+								gravity = 0;
+								jumping = false;
+							} else {
+								if (intersect.Left == hero.Left)
+									hero.Left = ground.Right;
+								else
+									hero.Right = ground.Left;
 							}
-							else
-							{
-								hero.Bottom = ground.Top;
-								if (!deviceActivated) {
-									gravity = 0;
-									touchingGround = true;
-								}
-							}
-							jumping = false;
+
 						}
+					} else if (gameObject is Enemy) {
+						var enemy = (Enemy)gameObject;
+						enemy.Color = Color.White;
+						if (hero.Intersects (enemy)) {
+							hero.Defend (enemy);
+							hero.Color = Color.Red; // Collision with the enemy, i.e sets the player's color to red if he collides with the enemy.
+						}
+
+						if (keystate.IsKeyDown (Keys.LeftControl) &&
+						   (DateTime.Now - lastAttack).TotalMilliseconds >= 1000 &&
+						   hero.AttackIntersects (enemy)) {
+							lastAttack = DateTime.Now;
+							enemy.Defend (hero);
+							enemy.Color = Color.Red;
+							if (enemy.Health <= 0) {
+								EnemyDrop (enemy);
+								Sections [activeSection].Remove (enemy);
+							}
+						}
+
+						if (enemy.Right >= enemy.PosRight)
+							enemy.MoveLeft = true;
+						else if (enemy.Left <= enemy.PosLeft)
+							enemy.MoveLeft = false;
+
+						if (enemy.MoveLeft)
+							enemy.X -= 2;
 						else
-						{
-							if (intersect.Left == hero.Left)
-								hero.Left = ground.Right;
-							else
-								hero.Right = ground.Left;
+							enemy.X += 2;
+
+					} else if (gameObject is IItem && hero.Intersects (gameObject)) {
+						if (gameObject is Coin) {
+							var coin = (Coin)gameObject;
+							hero.Money += coin.Value;
+						} else if (gameObject is IInventoryItem) {
+							var inventoryItem = (IInventoryItem)gameObject;
+							hero.Inventory.Add (inventoryItem);
 						}
 
+						Sections [activeSection].Remove (gameObject);
 					}
 				}
-				else if (gameObject is Enemy)
-				{
-					var enemy = (Enemy)gameObject;
-					enemy.Color = Color.White;
-					if (hero.Intersects(enemy))
-					{
-						hero.Defend (enemy);
-						hero.Color = Color.Red; // Collision with the enemy, i.e sets the player's color to red if he collides with the enemy.
-					}
-
-					if (keystate.IsKeyDown (Keys.LeftControl) && 
-						(DateTime.Now - lastAttack).TotalMilliseconds >= 1000 && 
-						hero.AttackIntersects (enemy))
-					{
-						lastAttack = DateTime.Now;
-						enemy.Defend (hero);
-						enemy.Color = Color.Red;
-					}
-					if (enemy.X == enemy.posRight) {
-						reachedRightEnd = true;
-						reachedLeftEnd = false;
-					}
-					if (enemy.X == enemy.posLeft) {
-						reachedLeftEnd = true;
-						reachedRightEnd = false;
-					}
-					if (reachedRightEnd)
-						enemy.X -= 2;
-					if (reachedLeftEnd)
-						enemy.X += 2;
-
-				}
-				else if (gameObject is IItem && hero.Intersects(gameObject))
-				{
-					if (gameObject is Coin)
-					{
-						var coin = (Coin)gameObject;
-						hero.Money += coin.Value;
-					}
-					else if (gameObject is IInventoryItem)
-					{
-						var inventoryItem = (IInventoryItem)gameObject;
-						hero.Inventory.Add (inventoryItem);
-					}
-
-					Sections [activeSection].Remove (gameObject);
-				}
+				hero.Left += SECTION_WIDTH * i;
 			}
 
 			if (keystate.IsKeyDown (Keys.Q))
 				hasDevice = true;
 
 			// Inverts device activated, whenever hero is touching ground, compared to which direction he is facing
-			if (keystate.IsKeyDown (Keys.E) && touchingGround)
+			if (hasDevice && keystate.IsKeyDown (Keys.E) && touchingGround)
 				deviceActivated = !deviceActivated;
 
 			//Player Movement
@@ -228,18 +217,18 @@ namespace SharpPlatform
 			if (keystate.IsKeyDown (Keys.P))
 				SaveSections (Sections, directoryPath);
 
-			if (jumping) {
-				if (deviceActivated)
-					hero.Y -= jumpspeed;
-				else
-					hero.Y += jumpspeed;
-				jumpspeed += 1;
-			} else {
-				if (keystate.IsKeyDown (Keys.Space) && touchingGround) {
-					jumping = true;
-					jumpspeed = -14;
-				}
+			if (jumping)
+			{
+				if (gravity > MAX_GRAVITY)
+					jumping = false;
 			}
+			else if (keystate.IsKeyDown(Keys.Space) && touchingGround) {
+				jumping = true;
+				gravity = -14;
+			}
+
+			if (hero.Bottom < -50 || hero.Top > 500)
+				hero.Defend (new AttackObject{ AttackValue = Int32.MaxValue });
 
 			camera.Update (gameTime, this);
 			base.Update (gameTime);
@@ -262,11 +251,9 @@ namespace SharpPlatform
 			spriteBatch.Draw (hero.Sprite, hero.Size, hero.Color);
 
 			//TODO: lav foreach på alle gameobjects i section, på det index nummer i secions man er på... og på det forrige og efterfølgende
-			for (int i = 0; i <= 0; i++) {
-				var Section = Sections [activeSection + i];
-
-				foreach (var gameObject in Section)
-					spriteBatch.Draw (gameObject.Sprite, gameObject.Size, gameObject.Color);
+			for (int i = Math.Max(activeSection - 1, 0); i < Math.Min(activeSection + 2, Sections.Count); i++) {
+				foreach (var gameObject in Sections[i])
+					spriteBatch.Draw (gameObject.Sprite, new Rectangle(gameObject.X + SECTION_WIDTH * i, gameObject.Y, gameObject.Width, gameObject.Height), gameObject.Color);
 			}
 
 			//spriteBatch.DrawString (gameFont, "Hello", new Vector2 (10, 10), Color.ForestGreen);
@@ -277,8 +264,11 @@ namespace SharpPlatform
 
 		public void GameOver()
 		{
+			gravity = 0;
 			hero.X = 0;
 			hero.Y = 0;
+			hero.Health = 5;
+			deviceActivated = false;
 		}
 
 		// Adds the coins to the game and allows for the player to pick up, using a switch statement.
@@ -304,7 +294,7 @@ namespace SharpPlatform
 					throw new Exception ("The type of coin was not specified");
 			}
 
-			var coin = new Coin (value, new Rectangle ((int)position.X, (int)position.Y, 30, 30), Content.Load<Texture2D> (spriteType));
+			var coin = new Coin (value, new Rectangle ((int)position.X, (int)position.Y, 20, 20), Content.Load<Texture2D> (spriteType));
 
 			Sections [activeSection].Add (coin);
 		}
