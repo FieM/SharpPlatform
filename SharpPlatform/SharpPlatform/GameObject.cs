@@ -26,22 +26,57 @@ namespace SharpPlatform
 			get;
 			protected set;
 		}
+
 		public Point Position {
 			get { return new Point (Size.X, Size.Y); }
 			set { Size = new Rectangle (value.X, value.Y, Size.Width, Size.Height); }
 		}
+
 		public int X {
 			get { return Size.X; }
 			set { Size = new Rectangle (value, Size.Y, Size.Width, Size.Height); }
 		}
+
 		public int Y {
 			get { return Size.Y; }
 			set { Size = new Rectangle (Size.X, value, Size.Width, Size.Height); }
 		}
+
+		public int Width {
+			get { return Size.Width; }
+			set { Size = new Rectangle (Size.X, Size.Y, value, Size.Height); }
+		}
+
+		public int Height {
+			get { return Size.Height; }
+			set { Size = new Rectangle (Size.X, Size.Y, Size.Width, value); }
+		}
+
+		public int Top {
+			get { return Size.Y; }
+			set { Size = new Rectangle(Size.X, value, Size.Width, Size.Height); }
+		}
+
+		public int Bottom {
+			get { return Size.Y + Size.Height; }
+			set { Size = new Rectangle(Size.X, value - Size.Height, Size.Width, Size.Height); }
+		}
+
+		public int Left {
+			get { return Size.X; }
+			set { Size = new Rectangle(value, Size.Y, Size.Width, Size.Height); }
+		}
+
+		public int Right {
+			get { return Size.X + Size.Width; }
+			set { Size = new Rectangle(value - Size.Width, Size.Y, Size.Width, Size.Height); }
+		}
+
 		public GameObject()
 		{
 			Color = Color.White;
 		}
+
 		public int posLeft {
 			get;
 			set;

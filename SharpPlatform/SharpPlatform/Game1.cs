@@ -20,9 +20,8 @@ namespace SharpPlatform
 		Camera camera; // Accessing the Camera class
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
-		//SpriteFont gameFont;
 		// Background
-		Texture2D backgroundTexture, ceilingSprite;
+		Texture2D backgroundTexture;
 		Vector2 backgroundPosition;
 		Random random = new Random ();
 		//Making a list of all my list of gameObjects. This will be the entire map of the game, Sections will contain a list of gameObjects, which is the content of the level(enemies, grounds etc.)
@@ -31,15 +30,8 @@ namespace SharpPlatform
 
 		Hero hero; // Accessing the Hero class
 		int gravity = 0; // Variables for the gravity & antigravity
-		int antigravity = 0;
-
 		bool jumping = false;
-		bool touchingGround = false; // Variables to work with the jumping method
-		bool touchingCeiling = false;
-		int startY, jumpspeed = 0;
-
-		bool antijumping = false;
-		int antistartY, antijumpspeed = 0;
+		int jumpspeed = 0;
 
 		bool hasDevice = false; // Used for inventory.
 		bool deviceActivated = false;
@@ -47,11 +39,10 @@ namespace SharpPlatform
 		bool reachedRightEnd = true;
 		bool reachedLeftEnd = false;
 
-
 		DateTime lastAttack = DateTime.MinValue;
 
 		//Screen size is 800px wide
-		string directoryPath = @"C:\Users\IceTruckker\Documents\GitHub\SharpPlatform\SharpPlatform\SharpPlatform\Content";
+		string directoryPath;
 		int activeSection = 0;
 
 		public Hero Hero
@@ -63,7 +54,8 @@ namespace SharpPlatform
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	            
-			graphics.IsFullScreen = false;	// Making sure that the game does not open in fullscreen.	
+			graphics.IsFullScreen = false;	// Making sure that the game does not open in fullscreen.
+			directoryPath = Path.Combine (Environment.CurrentDirectory, "Content");
 		}
 
 		/// <summary>
@@ -102,9 +94,6 @@ namespace SharpPlatform
 
 			backgroundTexture = Content.Load<Texture2D> ("Background"); // Loads the background picture.
 			backgroundPosition = new Vector2 (-400, 0); // Sets the position of the background position.
-
-			ceilingSprite = Content.Load<Texture2D> ("ground"); // Loads the ceiling.
-
 		}
 
 		/// <summary>
@@ -115,90 +104,23 @@ namespace SharpPlatform
 		protected override void Update (GameTime gameTime)
 		{
 			var keystate = Keyboard.GetState ();
-			startY = hero.Y;
-			antistartY = hero.Y;
+
+			bool touchingGround = false; // Variables to work with the jumping method
 
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keystate.IsKeyDown (Keys.Escape) || keystate.IsKeyDown (Keys.Back)) {
 				Exit ();
 			}
-			// TODO: Add your update logic here
-			hero.Color = Color.White; // Adds a white border around the hero.
-
-//			if (hero.Intersects (ceiling)) { // Collision with ceiling.
-//				antigravity = 0; // Antigravity 
-//				touchingCeiling = true;
-//				touchingGround = false;
-//			}
-
-			if (keystate.IsKeyDown (Keys.Q))
-				hasDevice = true;
-
-			if (keystate.IsKeyDown (Keys.E) && touchingGround)
-				deviceActivated = true;
-			if (keystate.IsKeyDown (Keys.E) && touchingCeiling && deviceActivated) {
-				deviceActivated = false;
-			}
-
-			//Player Movement
-			if (keystate.IsKeyDown (Keys.Right))
-				hero.X += 5;
-			if (keystate.IsKeyDown (Keys.Left))
-				hero.X -= 5;
-			//for testing purpose only, to be deleted
-			if (keystate.IsKeyDown (Keys.Down))
-				hero.Y += 5;
-			if (keystate.IsKeyDown (Keys.Up))
-				hero.Y -= 5;
-			//Saving map to files
-			if (keystate.IsKeyDown (Keys.P))
-				SaveSections (Sections, directoryPath);
 
 			//GRAVITY AND ANTI-GRAVITY
-			if (deviceActivated) {
-				hero.Y -= antigravity;
-				antigravity += 1;
-				if (antigravity > 4)
-					antigravity = 4;
-			}
-			else{
+			if (deviceActivated)
+				hero.Y -= gravity;
+			else
 				hero.Y += gravity;
-				gravity += 1;
-				if (gravity > 4)
-					gravity = 4;
-			}
 
-
-			if (jumping) {
-				hero.Y += jumpspeed;
-				jumpspeed += 1;
-				if (hero.Y >= startY) {
-					hero.Y = startY;
-					jumping = false;
-					touchingGround = false;
-				}
-			} else {
-				if (keystate.IsKeyDown (Keys.Space) && touchingGround && !deviceActivated) {
-					jumping = true;
-					jumpspeed = -14;
-				}
-			}
-
-
-			if (antijumping) {
-				hero.Y -= antijumpspeed;
-				antijumpspeed += 1;
-				if (hero.Y <= antistartY) {
-					hero.Y = antistartY;
-					antijumping = false;
-					touchingCeiling = false;
-				}
-			} else {
-				if (keystate.IsKeyDown (Keys.Space) && touchingCeiling && deviceActivated) {
-					antijumping = true;
-					antijumpspeed = -14;
-				}
-			}
+			gravity += 1;
+			if (gravity > 4)
+				gravity = 4;
 
 			//Collision
 			// Use LINQ to only select the game objects of Enemy type.
@@ -209,10 +131,35 @@ namespace SharpPlatform
 					var ground = (Ground)gameObject;
 					if (hero.Intersects (ground))
 					{
-						gravity = 0;
-						touchingGround = true;
-						touchingCeiling = false;
-						hero.Y = ground.Y - hero.Size.Height; // Collission detecting in accordance to the player sprite's height.
+						var intersect = Rectangle.Intersect (hero.Size, ground.Size);
+						if (intersect.Width >= intersect.Height)
+						{
+							if (intersect.Top == hero.Top)
+							{
+								hero.Top = ground.Bottom;
+								if (deviceActivated) {
+									gravity = 0;
+									touchingGround = true;
+								}
+							}
+							else
+							{
+								hero.Bottom = ground.Top;
+								if (!deviceActivated) {
+									gravity = 0;
+									touchingGround = true;
+								}
+							}
+							jumping = false;
+						}
+						else
+						{
+							if (intersect.Left == hero.Left)
+								hero.Left = ground.Right;
+							else
+								hero.Right = ground.Left;
+						}
+
 					}
 				}
 				else if (gameObject is Enemy)
@@ -261,6 +208,36 @@ namespace SharpPlatform
 					}
 
 					Sections [activeSection].Remove (gameObject);
+				}
+			}
+
+			if (keystate.IsKeyDown (Keys.Q))
+				hasDevice = true;
+
+			// Inverts device activated, whenever hero is touching ground, compared to which direction he is facing
+			if (keystate.IsKeyDown (Keys.E) && touchingGround)
+				deviceActivated = !deviceActivated;
+
+			//Player Movement
+			if (keystate.IsKeyDown (Keys.Right))
+				hero.X += 5;
+			if (keystate.IsKeyDown (Keys.Left))
+				hero.X -= 5;
+
+			//Saving map to files
+			if (keystate.IsKeyDown (Keys.P))
+				SaveSections (Sections, directoryPath);
+
+			if (jumping) {
+				if (deviceActivated)
+					hero.Y -= jumpspeed;
+				else
+					hero.Y += jumpspeed;
+				jumpspeed += 1;
+			} else {
+				if (keystate.IsKeyDown (Keys.Space) && touchingGround) {
+					jumping = true;
+					jumpspeed = -14;
 				}
 			}
 
