@@ -15,7 +15,7 @@ namespace SharpPlatform
 {
 	public class Game1 : Game
 	{
-		Camera camera;
+		Camera camera; // Accessing the Camera class
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 		//SpriteFont gameFont;
@@ -26,12 +26,12 @@ namespace SharpPlatform
 		List<GameObject> gameObjects = new List<GameObject>();
 		public Rectangle ceiling;
 
-		Hero hero;
-		int gravity = 0;
+		Hero hero; // Accessing the Hero class
+		int gravity = 0; // Variables for the gravity & antigravity
 		int antigravity = 0;
 
 		bool jumping = false;
-		bool touchingGround = false;
+		bool touchingGround = false; // Variables to work with the jumping method
 		bool touchingCeiling = false;
 		int startY, jumpspeed = 0;
 
@@ -43,22 +43,22 @@ namespace SharpPlatform
 
 		DateTime lastAttack = DateTime.MinValue;
 
-		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) };
-		Rectangle[] groundSizesUpperTwo = new[] { new Rectangle (1000, 350, 1000, 60) };
+		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) }; // The rectangles in the game.
+		Rectangle[] groundSizesUpperTwo = new[] { new Rectangle (1000, 350, 1000, 60) }; // Rectangles in the game.
 		Rectangle[] groundSizes = new[] { new Rectangle (500, 170, 1000, 30) };
 		Point[] enemyPositions = new[] { new Point (100, 100) };
 		Point[] coinPositions = new[] { new Point (100, 200) };
 
 		public Hero Hero
 		{
-			get { return hero; }
+			get { return hero; } // Calling the hero class.
 		}
 
 		public Game1 ()
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	            
-			graphics.IsFullScreen = false;		
+			graphics.IsFullScreen = false;	// Making sure that the game does not open in fullscreen.	
 		}
 
 		/// <summary>
@@ -73,7 +73,7 @@ namespace SharpPlatform
 			// TODO: Add your initialization logic here
 			base.Initialize (); // Calls LoadContent, and therefore gets the width and height of enemy and player
 			//playerRec = new Rectangle ((int)player.X, (int)player.Y, playerSprite.Width, playerSprite.Height);
-			ceiling = new Rectangle (500, 200, 1000, 30);
+			ceiling = new Rectangle (500, 200, 1000, 30); // Added a top ceiling.
 
 		}
 
