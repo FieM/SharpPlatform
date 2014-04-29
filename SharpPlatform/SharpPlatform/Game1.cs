@@ -88,7 +88,7 @@ namespace SharpPlatform
 
 			Sections = LoadSections (directoryPath);
 
-			hero = new Hero (new Rectangle(0, 0, 50, 50), Content.Load<Texture2D> ("hero")); //Using initializer to set property
+			hero = new Hero (new Rectangle(450, 50, 50, 50), Content.Load<Texture2D> ("hero")); //Using initializer to set property
 			hero.Died += (sender, e) => GameOver(); // Endgame statement that allows for the player to have an endgame.
 
 			backgroundTexture = Content.Load<Texture2D> ("Background"); // Loads the background picture.
