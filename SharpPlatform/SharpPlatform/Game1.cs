@@ -38,7 +38,7 @@ namespace SharpPlatform
 		bool antijumping = false;
 		int antistartY, antijumpspeed = 0;
 
-		bool hasDevice = false;
+		bool hasDevice = false; // Used for inventory.
 		bool deviceActivated = false;
 
 		DateTime lastAttack = DateTime.MinValue;
@@ -90,7 +90,7 @@ namespace SharpPlatform
 			foreach (var size in groundSizes)
 				AddGround (size);
 
-			foreach (var size in groundSizesUpper)
+			foreach (var size in groundSizesUpper) // Adds each of the rectangles to the game.
 				AddGround (size);
 
 			foreach (var size in groundSizesUpperTwo)
@@ -103,12 +103,12 @@ namespace SharpPlatform
 				AddCoin (position);
 
 			hero = new Hero (new Rectangle(0, 0, 50, 50), Content.Load<Texture2D> ("hero")); //Using initializer to set property
-			hero.Died += (sender, e) => GameOver();
+			hero.Died += (sender, e) => GameOver(); // Endgame statement that allows for the player to have an endgame.
 
-			backgroundTexture = Content.Load<Texture2D> ("Background");
-			backgroundPosition = new Vector2 (-400, 0);
+			backgroundTexture = Content.Load<Texture2D> ("Background"); // Loads the background picture.
+			backgroundPosition = new Vector2 (-400, 0); // Sets the position of the background position.
 
-			ceilingSprite = Content.Load<Texture2D> ("ground");
+			ceilingSprite = Content.Load<Texture2D> ("ground"); // Loads the ceiling.
 
 		}
 
@@ -128,10 +128,10 @@ namespace SharpPlatform
 				Exit ();
 			}
 			// TODO: Add your update logic here
-			hero.Color = Color.White;
+			hero.Color = Color.White; // Adds a white border around the hero.
 
-			if (hero.Intersects (ceiling)) {
-				antigravity = 0;
+			if (hero.Intersects (ceiling)) { // Collision with ceiling.
+				antigravity = 0; // Antigravity 
 				touchingCeiling = true;
 				touchingGround = false;
 			}
@@ -220,7 +220,7 @@ namespace SharpPlatform
 						gravity = 0;
 						touchingGround = true;
 						touchingCeiling = false;
-						hero.Y = ground.Y - hero.Size.Height;
+						hero.Y = ground.Y - hero.Size.Height; // Collission detecting in accordance to the player sprite's height.
 					}
 				}
 				else if (gameObject is Enemy)
@@ -230,7 +230,7 @@ namespace SharpPlatform
 					if (hero.Intersects(enemy))
 					{
 						hero.Defend (enemy);
-						hero.Color = Color.Red;
+						hero.Color = Color.Red; // Collision with the enemy, i.e sets the player's color to red if he collides with the enemy.
 					}
 
 					if (keystate.IsKeyDown (Keys.LeftControl) && 
@@ -316,7 +316,7 @@ namespace SharpPlatform
 
 			gameObjects.Add (enemy);
 		}
-
+		// Adds the coins to the game and allows for the player to pick up, using a switch statement.
 		public void AddCoin(Point position)
 		{
 			string spriteType = null;
