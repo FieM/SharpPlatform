@@ -11,9 +11,8 @@ using Microsoft.Xna.Framework.Media;
 
 namespace SharpPlatform
 {
-	public class Ground : GameObject
+	public class Ground : AttackObject
 	{
-
 		public Ground (Rectangle size, Texture2D sprite)
 		{
 			Size = size;

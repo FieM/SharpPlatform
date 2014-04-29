@@ -1,0 +1,11 @@
+TODO:
+
+Enemy AI
+Collision with ground
+Equipable items
+Inventory show
+StartScreen
+GameOverScreen
+Highscore
+Money show
+Shopkeeper

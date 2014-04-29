@@ -1,0 +1,5 @@
+Ground,#FFFFFFFF,ground,0,300,2000,40,0
+Coin,#FFFFFFFF,goldcoin,900,270,20,20,5
+Enemy,#FFFFFFFF,enemy,500,250,50,50,1
+coin,#FFFFFFFF,silvercoin,1980,270,20,20,3
+Ground,#FFFFFFFF,ground,250,260,20,40,0
