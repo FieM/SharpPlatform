@@ -17,7 +17,7 @@ namespace SharpPlatform
 {
 	public class Game1 : Game
 	{
-		Camera camera;
+		Camera camera; // Accessing the Camera class
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 		//SpriteFont gameFont;
@@ -30,20 +30,24 @@ namespace SharpPlatform
 		public Rectangle ceiling;
 		Dictionary<string, Texture2D> sprites = new Dictionary<string, Texture2D> ();
 
-		Hero hero;
-		int gravity = 0;
+		Hero hero; // Accessing the Hero class
+		int gravity = 0; // Variables for the gravity & antigravity
 		int antigravity = 0;
 
 		bool jumping = false;
-		bool touchingGround = false;
+		bool touchingGround = false; // Variables to work with the jumping method
 		bool touchingCeiling = false;
 		int startY, jumpspeed = 0;
 
 		bool antijumping = false;
 		int antistartY, antijumpspeed = 0;
 
-		bool hasDevice = false;
+		bool hasDevice = false; // Used for inventory.
 		bool deviceActivated = false;
+
+		bool reachedRightEnd = true;
+		bool reachedLeftEnd = false;
+
 
 		DateTime lastAttack = DateTime.MinValue;
 
@@ -52,7 +56,6 @@ namespace SharpPlatform
 		int activeSection = 0;
 		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) };
 		Rectangle[] groundSizesUpperTwo = new[] { new Rectangle (1000, 350, 1000, 60) };
-		Rectangle[] groundSizes = new[] { new Rectangle (500, 170, 1000, 30) };
 		Rectangle[] groundSizes = new[]
 		{
 			new Rectangle (-400, 300, 3000, 50),
@@ -63,14 +66,14 @@ namespace SharpPlatform
 
 		public Hero Hero
 		{
-			get { return hero; }
+			get { return hero; } // Calling the hero class.
 		}
 
 		public Game1 ()
 		{
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	            
-			graphics.IsFullScreen = false;		
+			graphics.IsFullScreen = false;	// Making sure that the game does not open in fullscreen.	
 		}
 
 		/// <summary>
@@ -85,7 +88,7 @@ namespace SharpPlatform
 			// TODO: Add your initialization logic here
 			base.Initialize (); // Calls LoadContent, and therefore gets the width and height of enemy and player
 			//playerRec = new Rectangle ((int)player.X, (int)player.Y, playerSprite.Width, playerSprite.Height);
-			ceiling = new Rectangle (500, 200, 1000, 30);
+			ceiling = new Rectangle (500, 200, 1000, 30); // Added a top ceiling.
 
 		}
 
@@ -103,23 +106,29 @@ namespace SharpPlatform
 			sprites.Add ("goldcoin", Content.Load<Texture2D> ("goldcoin"));
 			sprites.Add ("silvercoin", Content.Load<Texture2D> ("silvercoin"));
 			sprites.Add ("coppercoin", Content.Load<Texture2D> ("coppercoin"));
-			foreach (var size in groundSizesUpper)
+			//TODO: use this.Content to load your game content here
+			foreach (var size in groundSizes)
+				AddGround (size);
+
+			foreach (var size in groundSizesUpper) // Adds each of the rectangles to the game.
 				AddGround (size);
 
 			foreach (var size in groundSizesUpperTwo)
 				AddGround (size);
 
+			foreach (var position in enemyPositions)
+				AddEnemy (position, 50, 300);
 
 			//TODO: use this.Content to load your game content here
 			Sections = LoadSections (directoryPath);
 
 			hero = new Hero (new Rectangle(0, 0, 50, 50), Content.Load<Texture2D> ("hero")); //Using initializer to set property
-			hero.Died += (sender, e) => GameOver();
+			hero.Died += (sender, e) => GameOver(); // Endgame statement that allows for the player to have an endgame.
 
-			backgroundTexture = Content.Load<Texture2D> ("Background");
-			backgroundPosition = new Vector2 (-400, 0);
+			backgroundTexture = Content.Load<Texture2D> ("Background"); // Loads the background picture.
+			backgroundPosition = new Vector2 (-400, 0); // Sets the position of the background position.
 
-			ceilingSprite = Content.Load<Texture2D> ("ground");
+			ceilingSprite = Content.Load<Texture2D> ("ground"); // Loads the ceiling.
 
 		}
 
@@ -139,10 +148,10 @@ namespace SharpPlatform
 				Exit ();
 			}
 			// TODO: Add your update logic here
-			hero.Color = Color.White;
+			hero.Color = Color.White; // Adds a white border around the hero.
 
-			if (hero.Intersects (ceiling)) {
-				antigravity = 0;
+			if (hero.Intersects (ceiling)) { // Collision with ceiling.
+				antigravity = 0; // Antigravity 
 				touchingCeiling = true;
 				touchingGround = false;
 			}
@@ -234,7 +243,7 @@ namespace SharpPlatform
 						gravity = 0;
 						touchingGround = true;
 						touchingCeiling = false;
-						hero.Y = ground.Y - hero.Size.Height;
+						hero.Y = ground.Y - hero.Size.Height; // Collission detecting in accordance to the player sprite's height.
 					}
 				}
 				else if (gameObject is Enemy)
@@ -244,7 +253,7 @@ namespace SharpPlatform
 					if (hero.Intersects(enemy))
 					{
 						hero.Defend (enemy);
-						hero.Color = Color.Red;
+						hero.Color = Color.Red; // Collision with the enemy, i.e sets the player's color to red if he collides with the enemy.
 					}
 
 					if (keystate.IsKeyDown (Keys.LeftControl) && 
@@ -255,6 +264,19 @@ namespace SharpPlatform
 						enemy.Defend (hero);
 						enemy.Color = Color.Red;
 					}
+					if (enemy.X == enemy.posRight) {
+						reachedRightEnd = true;
+						reachedLeftEnd = false;
+					}
+					if (enemy.X == enemy.posLeft) {
+						reachedLeftEnd = true;
+						reachedRightEnd = false;
+					}
+					if (reachedRightEnd)
+						enemy.X -= 2;
+					if (reachedLeftEnd)
+						enemy.X += 2;
+
 				}
 				else if (gameObject is IItem && hero.Intersects(gameObject))
 				{
@@ -314,6 +336,30 @@ namespace SharpPlatform
 			hero.Y = 0;
 		}
 
+		public void AddGround(Rectangle size)
+		{
+			var ground = new Ground (size, Content.Load<Texture2D> ("ground"));
+
+			gameObjects.Add (ground);
+		}
+
+		public void AddEnemy(Point position, int posLeft, int posRight)
+		{
+			var enemy = new Enemy(new Rectangle (position.X, position.Y, 50, 50), Content.Load<Texture2D> ("hero"), posLeft, posRight);
+
+			enemy.Died += (sender, e) =>
+			{
+				var enemyDied = sender as Enemy;
+				if (enemyDied == null)
+					return;
+
+				EnemyDrop (enemyDied);
+				gameObjects.Remove (enemyDied);
+			};
+
+			gameObjects.Add (enemy);
+		}
+		// Adds the coins to the game and allows for the player to pick up, using a switch statement.
 		public void AddCoin(Point position)
 		{
 			string spriteType = null;

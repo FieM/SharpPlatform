@@ -12,8 +12,10 @@ namespace SharpPlatform
 {
 	public class Enemy : Character
 	{
-		public Enemy(Rectangle size, Texture2D sprite)
+		public Enemy(Rectangle size, Texture2D sprite, int left, int right)
 		{
+			posLeft = left;
+			posRight = right;
 			Size = size;
 			Sprite = sprite;
 			Color = Color.White;

@@ -42,6 +42,14 @@ namespace SharpPlatform
 		{
 			Color = Color.White;
 		}
+		public int posLeft {
+			get;
+			set;
+		}
+		public int posRight {
+			get;
+			set;
+		}
 	}
 	public class AttackObject : GameObject
 	{
