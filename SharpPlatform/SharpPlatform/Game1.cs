@@ -41,12 +41,16 @@ namespace SharpPlatform
 		bool hasDevice = false; // Used for inventory.
 		bool deviceActivated = false;
 
+		bool reachedRightEnd = true;
+		bool reachedLeftEnd = false;
+
+
 		DateTime lastAttack = DateTime.MinValue;
 
 		Rectangle[] groundSizesUpper = new[] { new Rectangle (-150, 350, 1000, 100) }; // The rectangles in the game.
 		Rectangle[] groundSizesUpperTwo = new[] { new Rectangle (1000, 350, 1000, 60) }; // Rectangles in the game.
 		Rectangle[] groundSizes = new[] { new Rectangle (500, 170, 1000, 30) };
-		Point[] enemyPositions = new[] { new Point (100, 100) };
+		Point[] enemyPositions = new[] { new Point (100, 100), new Point (200, 100) };
 		Point[] coinPositions = new[] { new Point (100, 200) };
 
 		public Hero Hero
@@ -97,7 +101,7 @@ namespace SharpPlatform
 				AddGround (size);
 
 			foreach (var position in enemyPositions)
-				AddEnemy (position);
+				AddEnemy (position, 50, 300);
 
 			foreach (var position in coinPositions)
 				AddCoin (position);
@@ -241,6 +245,19 @@ namespace SharpPlatform
 						enemy.Defend (hero);
 						enemy.Color = Color.Red;
 					}
+					if (enemy.X == enemy.posRight) {
+						reachedRightEnd = true;
+						reachedLeftEnd = false;
+					}
+					if (enemy.X == enemy.posLeft) {
+						reachedLeftEnd = true;
+						reachedRightEnd = false;
+					}
+					if (reachedRightEnd)
+						enemy.X -= 2;
+					if (reachedLeftEnd)
+						enemy.X += 2;
+
 				}
 				else if (gameObject is IItem && hero.Intersects(gameObject))
 				{
@@ -300,9 +317,9 @@ namespace SharpPlatform
 			gameObjects.Add (ground);
 		}
 
-		public void AddEnemy(Point position)
+		public void AddEnemy(Point position, int posLeft, int posRight)
 		{
-			var enemy = new Enemy(new Rectangle (position.X, position.Y, 50, 50), Content.Load<Texture2D> ("hero"));
+			var enemy = new Enemy(new Rectangle (position.X, position.Y, 50, 50), Content.Load<Texture2D> ("hero"), posLeft, posRight);
 
 			enemy.Died += (sender, e) =>
 			{
