@@ -23,6 +23,9 @@ namespace SharpPlatform
 		Camera camera; // Accessing the Camera class
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
+
+		MainMenu main = new MainMenu();
+
 		// Background
 		Texture2D backgroundTexture;
 		Vector2 backgroundPosition;
@@ -35,7 +38,7 @@ namespace SharpPlatform
 		int gravity = 0; // Variables for the gravity & antigravity
 		bool jumping = false;
 
-		bool hasDevice = false; // Used for inventory.
+		//bool hasDevice = false; // Used for inventory.
 		bool deviceActivated = false;
 
 		DateTime lastAttack = DateTime.MinValue;
@@ -54,6 +57,8 @@ namespace SharpPlatform
 			graphics = new GraphicsDeviceManager (this);
 			Content.RootDirectory = "Content";	            
 			graphics.IsFullScreen = false;	// Making sure that the game does not open in fullscreen.
+			graphics.PreferredBackBufferWidth = 800;
+			graphics.PreferredBackBufferHeight = 500;
 			directoryPath = Path.Combine (Environment.CurrentDirectory, "Content");
 		}
 
@@ -80,19 +85,21 @@ namespace SharpPlatform
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
 
-			sprites.Add ("ground", Content.Load<Texture2D> ("ground"));
+			sprites.Add ("ground", Content.Load<Texture2D> ("groundTwo"));
 			sprites.Add ("enemy", Content.Load<Texture2D> ("enemy"));
-			sprites.Add ("goldcoin", Content.Load<Texture2D> ("goldcoin"));
-			sprites.Add ("silvercoin", Content.Load<Texture2D> ("silvercoin"));
-			sprites.Add ("coppercoin", Content.Load<Texture2D> ("coppercoin"));
+			sprites.Add ("goldcoin", Content.Load<Texture2D> ("goldcoinTwo"));
+			sprites.Add ("silvercoin", Content.Load<Texture2D> ("silvercoinTwo"));
+			sprites.Add ("coppercoin", Content.Load<Texture2D> ("coppercoinTwo"));
 
 			Sections = LoadSections (directoryPath);
 
-			hero = new Hero (new Rectangle(450, 50, 50, 50), Content.Load<Texture2D> ("hero")); //Using initializer to set property
+			hero = new Hero (new Rectangle(450, 50, 42, 56), Content.Load<Texture2D> ("hero")); //Using initializer to set property
 			hero.Died += (sender, e) => GameOver(); // Endgame statement that allows for the player to have an endgame.
 
-			backgroundTexture = Content.Load<Texture2D> ("Background"); // Loads the background picture.
+			backgroundTexture = Content.Load<Texture2D> ("BackgroundTwo"); // Loads the background picture.
 			backgroundPosition = new Vector2 (-400, 0); // Sets the position of the background position.
+
+			main.LoadContent (Content);
 		}
 
 		/// <summary>
@@ -200,11 +207,8 @@ namespace SharpPlatform
 				hero.Left += SECTION_WIDTH * i;
 			}
 
-			if (keystate.IsKeyDown (Keys.Q))
-				hasDevice = true;
-
 			// Inverts device activated, whenever hero is touching ground, compared to which direction he is facing
-			if (hasDevice && keystate.IsKeyDown (Keys.E) && touchingGround)
+			if (keystate.IsKeyDown (Keys.E) && touchingGround)
 				deviceActivated = !deviceActivated;
 
 			//Player Movement
@@ -230,6 +234,7 @@ namespace SharpPlatform
 			if (hero.Bottom < -50 || hero.Top > 500)
 				hero.Defend (new AttackObject{ AttackValue = Int32.MaxValue });
 
+			main.Update ();
 			camera.Update (gameTime, this);
 			base.Update (gameTime);
 		}
@@ -255,7 +260,7 @@ namespace SharpPlatform
 				foreach (var gameObject in Sections[i])
 					spriteBatch.Draw (gameObject.Sprite, new Rectangle(gameObject.X + SECTION_WIDTH * i, gameObject.Y, gameObject.Width, gameObject.Height), gameObject.Color);
 			}
-
+			main.Draw (spriteBatch);
 			//spriteBatch.DrawString (gameFont, "Hello", new Vector2 (10, 10), Color.ForestGreen);
 			spriteBatch.End ();
 
