@@ -228,7 +228,7 @@ namespace SharpPlatform
 			}
 			else if (keystate.IsKeyDown(Keys.Space) && touchingGround) {
 				jumping = true;
-				gravity = -14;
+				gravity = -16;
 			}
 
 			if (hero.Bottom < -50 || hero.Top > 500)
@@ -397,7 +397,7 @@ namespace SharpPlatform
 							gameObject = new Coin (int.Parse (values [index++]), size, sprite){ Color = color };
 							break;
 						case "enemy":
-						gameObject = new Enemy (size, sprite, 50, 300){ Color = color, AttackValue = int.Parse (values [index++]) };
+						gameObject = new Enemy (size, sprite, int.Parse(values [index++]), int.Parse(values [index++])){ Color = color, AttackValue = int.Parse (values [index++]) };
 							break;
 						default:
 							continue;

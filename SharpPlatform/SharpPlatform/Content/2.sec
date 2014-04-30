@@ -1,4 +1,4 @@
-ground,#FFFFFFFF,ground,0,0,40,500,0
+ground,#FFFFFFFF,ground,0,0,2000,40,0
 ground,#FFFFFFFF,ground,0,440,2000,40,0
 ground,#FFFFFFFF,ground,40,360,150,40,0
 ground,#FFFFFFFF,ground,250,280,200,40,0
@@ -6,8 +6,9 @@ ground,#FFFFFFFF,ground,550,280,200,40,0
 ground,#FFFFFFFF,ground,500,200,100,40,0
 ground,#FFFFFFFF,ground,800,360,150,40,0
 ground,#FFFFFFFF,ground,1000,280,40,40,0
-ground,#FFFFFFFF,ground,1200,360,40,40,0
+ground,#FFFFFFFF,ground,1200,240,40,40,0
 ground,#FFFFFFFF,ground,1400,200,40,40,0
-enemy,#FFFFFFFF,enemy,300,300,50,50,1
+ground,#FFFFFFFF,ground,1550,180,200,40,0
 coin,#FFFFFFFF,goldcoin,100,330,20,20,5
-coin,#FFFFFFFF,silvercoin,1980,270,20,20,3
+coin,#FFFFFFFF,silvercoin,1710,160,20,20,3
+coin,#FFFFFFFF,silvercoin,1570,160,20,20,3
