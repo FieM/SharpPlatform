@@ -166,8 +166,10 @@ namespace SharpPlatform
 						var enemy = (Enemy)gameObject;
 						enemy.Color = Color.White;
 						if (hero.Intersects (enemy)) {
+							hero.Left += SECTION_WIDTH * i;
 							hero.Defend (enemy);
 							hero.Color = Color.Red; // Collision with the enemy, i.e sets the player's color to red if he collides with the enemy.
+							hero.Left -= SECTION_WIDTH * i;
 						}
 
 						if (keystate.IsKeyDown (Keys.LeftControl) &&
@@ -270,8 +272,8 @@ namespace SharpPlatform
 		public void GameOver()
 		{
 			gravity = 0;
-			hero.X = 0;
-			hero.Y = 0;
+			hero.X = 450;
+			hero.Y = 50;
 			hero.Health = 5;
 			deviceActivated = false;
 		}

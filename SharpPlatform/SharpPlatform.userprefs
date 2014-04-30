@@ -1,19 +1,22 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="SharpPlatform\MainMenu.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="c:\Users\IceTruckker\Documents\GitHub\SharpPlatform\SharpPlatform\SharpPlatform\Game1.cs">
     <Files>
-      <File FileName="SharpPlatform\Enemy.cs" Line="1" Column="1" />
-      <File FileName="SharpPlatform\Character.cs" Line="1" Column="1" />
-      <File FileName="SharpPlatform\ExtensionMethods.cs" Line="1" Column="1" />
-      <File FileName="SharpPlatform\Ground.cs" Line="1" Column="1" />
-      <File FileName="SharpPlatform\GameObject.cs" Line="80" Column="40" />
-      <File FileName="SharpPlatform\Game1.cs" Line="263" Column="28" />
-      <File FileName="SharpPlatform\GUIElement.cs" Line="9" Column="24" />
-      <File FileName="SharpPlatform\MainMenu.cs" Line="22" Column="39" />
+      <File FileName="c:\Users\IceTruckker\Documents\GitHub\SharpPlatform\SharpPlatform\SharpPlatform\Game1.cs" Line="274" Column="4" />
+      <File FileName="SharpPlatform\Content\0.sec" Line="1" Column="1" />
+      <File FileName="SharpPlatform\Content\1.sec" Line="1" Column="1" />
+      <File FileName="SharpPlatform\Content\2.sec" Line="1" Column="1" />
+      <File FileName="SharpPlatform\Hero.cs" Line="21" Column="21" />
+      <File FileName="SharpPlatform\Character.cs" Line="12" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="c:\Users\IceTruckker\Documents\GitHub\SharpPlatform\SharpPlatform\SharpPlatform\Game1.cs" line="273" column="4" />
+      <Breakpoint file="c:\Users\IceTruckker\Documents\GitHub\SharpPlatform\SharpPlatform\SharpPlatform\Game1.cs" line="274" column="4" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="c:\Users\IceTruckker\Documents\GitHub\SharpPlatform\SharpPlatform\SharpPlatform\Game1.cs" line="170" offsetX="1082" offsetY="2704" expression="hero" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>
